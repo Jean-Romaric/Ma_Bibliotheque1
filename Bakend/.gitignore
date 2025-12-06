@@ -1,0 +1,3 @@
+//Ce fichier indique à Git quels fichiers ou dossiers ne doivent pas être suivis dans ton dépôt.
+node_modules/
+.env
