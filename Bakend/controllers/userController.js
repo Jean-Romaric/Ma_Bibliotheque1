@@ -107,7 +107,7 @@ const connetUser = (req, res) => {
     try {
       const isPasswordCorrect = await bcrypt.compare(Mot_de_passe, util.Mot_de_passe);// isPasswordCorrect renvoie true <=> les mots de passe correspondent
       if (!isPasswordCorrect) {
-        return res.status(401).json({ message: 'Mot de passe incorrect' });
+        return res.status(401).json({ message: 'entre un mot de passe correct' });
       }
     
       // Création du token JWT
@@ -127,7 +127,7 @@ const connetUser = (req, res) => {
             return res.status(500).json({ message: 'Erreur lors de la création de session' });
           }
 
-          // Réponse envoyée au frontend
+          // Réponse envoyée au frontend 
             return res.status(200).json({
             message: 'Connexion réussie',token,
             util: {

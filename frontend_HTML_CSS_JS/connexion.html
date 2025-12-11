@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Connexion</h2>
+
+        <form id="form1">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+
+            <button type="submit">Se connecter</button>
+
+            <p id="error"></p>
+        </form>
+    </div>
+
+    <script >
+        document.getElementById("form1").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    const errorDiv = document.getElementById("error");
+    errorDiv.textContent = "";
+    errorDiv.style.color = "";
+
+    // Vérification simple côté client
+    if (email === "" || pass === "") {
+        errorDiv.textContent = "Veuillez remplir tous les champs.";
+        errorDiv.style.color = "red";
+        return;
+    }
+
+    // Envoi au backend Express, envoie manullement
+    async function loginUser() {
+        const url = "http://localhost:8000/login";
+        try{
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    Email: email,
+                    Mot_de_passe: pass
+                })
+            });
+            console.log(response);//(1)
+
+            const data = await response.json();
+            console.log(data);//(2) 
+            if (!response.ok) { //non true
+                console.log(!response.ok);//(3)
+                //throw new Error("Erreur lors de la connexion");
+                errorDiv.textContent = data.message;
+                errorDiv.style.color = "red";
+            } else {
+                errorDiv.textContent = data.message;
+            errorDiv.style.color = "green";
+
+            // Stocker token
+            localStorage.setItem("token", data.token);
+
+            console.log("Utilisateur connecté :", data.util);
+            console.log("Token :", data.token);
+
+             // Redirection après 1sec
+            setTimeout(() => {
+               window.location.href = "dashboard.html";
+            }, 4000);
+
+            }
+        } catch (error) {
+            console.error("Erreur réseau :", error);
+            errorDiv.textContent = "Erreur réseau";
+            errorDiv.style.color = "red";  
+        }
+    
+    //fetch("http://localhost:8000/login", {
+        //method: "POST",
+        //headers: { "Content-Type": "application/json" },
+        //body: JSON.stringify({
+          ////Mot_de_passe: pass
+        //})
+    //})
+    //.then(async res => {
+      //  const data = await res.json();
+        //console.log(data);
+
+        //if (!res.ok) {
+          //  errorDiv.textContent = data.message;
+            //errorDiv.style.color = "red";
+       // } else {
+         //   errorDiv.textContent = "Connexion réussie !";
+          //  errorDiv.style.color = "green";
+
+            // Stocker token
+           // localStorage.setItem("token", data.token);
+
+            //console.log("Utilisateur connecté :", data.util);
+            //console.log("Token :", data.token);
+
+            // Redirection après 1sec
+            //setTimeout(() => {
+               //window.location.href = "dashboard.html";
+            //}, 4000);
+       // }
+  //  })
+   // .catch(err => {
+    //    console.error(err);
+  //      errorDiv.textContent = "Erreur réseau";
+  //      errorDiv.style.color = "red";
+ //   });
+//});
+    }
+    loginUser();
+});
+    </script>
+</body>
+</html>
